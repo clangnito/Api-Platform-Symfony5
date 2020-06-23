@@ -1,6 +1,10 @@
 Symfony Demo Application
 ========================
 
+[![SB Admin 2 Preview](https://github.com/clangnito/Api-Platform-Symfony5/blob/master/Capture%20d%E2%80%99%C3%A9cran%20du%202020-06-24%2000-46-28.png)](https://github.com/clangnito/Api-Platform-Symfony5/blob/master/Capture%20d%E2%80%99%C3%A9cran%20du%202020-06-24%2000-46-28.png)
+
+
+
 The "Symfony Demo Application" is a reference application created to show how
 to develop applications following the [Symfony Best Practices][1].
 
