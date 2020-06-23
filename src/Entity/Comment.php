@@ -11,13 +11,42 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
 
+ 
 /**
  * @ORM\Entity
  * @ORM\Table(name="symfony_demo_comment")
+ * @ApiResource(
+ *  attributes={
+ *      "order"={"publishedAt":"DESC"}
+ *  },
+ *  paginationItemsPerPage = 2,
+ *  normalizationContext={"groups"={"read:comment"}},
+ *  collectionOperations={
+ *      "get",
+ *      "post"={
+ *          "controller"=App\Controller\Api\CommentCreateController::class,
+ *          "denormalization_context"={"groups"={"create:comment"}}
+ *          }
+ *      },
+ *  itemOperations={
+ *      "get" = {
+ *              "normalization_context"={"groups"={"read:comment","read:full:comment"}}
+ *          },
+ *      "put"={
+ *          "denormalization_context"={"groups"={"update:comment"}}
+ *      },
+ *      "delete"
+ *      }
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"post":"exact"})
  *
  * Defines the properties of the Comment entity to represent the blog comments.
  * See https://symfony.com/doc/current/doctrine.html#creating-an-entity-class
@@ -36,6 +65,7 @@ class Comment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:comment"}) 
      */
     private $id;
 
@@ -44,6 +74,7 @@ class Comment
      *
      * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read:full:comment","create:comment"}) 
      */
     private $post;
 
@@ -58,12 +89,14 @@ class Comment
      *     max=10000,
      *     maxMessage="comment.too_long"
      * )
+     * @Groups({"read:comment","create:comment","update:comment"}) 
      */
     private $content;
 
     /**
      * @var \DateTime
      *
+     * @Groups({"read:comment"}) 
      * @ORM\Column(type="datetime")
      */
     private $publishedAt;
@@ -72,6 +105,7 @@ class Comment
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @Groups({"read:comment"}) 
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
